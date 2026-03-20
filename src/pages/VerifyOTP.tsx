@@ -3,12 +3,14 @@ import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { KeyRound, ArrowLeft, RotateCcw } from 'lucide-react'
 
+const OTP_LENGTH = 8
+
 export default function VerifyOTP() {
   const location = useLocation()
   const navigate = useNavigate()
   const email = location.state?.email
 
-  const [otp, setOtp] = useState(['', '', '', '', '', ''])
+  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(''))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [resending, setResending] = useState(false)
@@ -33,13 +35,13 @@ export default function VerifyOTP() {
   function handleChange(index: number, value: string) {
     if (value.length > 1) {
       // Handle paste
-      const digits = value.replace(/\D/g, '').slice(0, 6).split('')
+      const digits = value.replace(/\D/g, '').slice(0, OTP_LENGTH).split('')
       const newOtp = [...otp]
       digits.forEach((digit, i) => {
-        if (index + i < 6) newOtp[index + i] = digit
+        if (index + i < OTP_LENGTH) newOtp[index + i] = digit
       })
       setOtp(newOtp)
-      const nextIndex = Math.min(index + digits.length, 5)
+      const nextIndex = Math.min(index + digits.length, OTP_LENGTH - 1)
       inputRefs.current[nextIndex]?.focus()
       return
     }
@@ -48,7 +50,7 @@ export default function VerifyOTP() {
     newOtp[index] = value.replace(/\D/g, '')
     setOtp(newOtp)
 
-    if (value && index < 5) {
+    if (value && index < OTP_LENGTH - 1) {
       inputRefs.current[index + 1]?.focus()
     }
   }
@@ -64,8 +66,8 @@ export default function VerifyOTP() {
     setError('')
     const token = otp.join('')
 
-    if (token.length !== 6) {
-      setError('Please enter the complete 6-digit code')
+    if (token.length !== OTP_LENGTH) {
+      setError(`Please enter the complete ${OTP_LENGTH}-digit code`)
       return
     }
 
@@ -99,13 +101,15 @@ export default function VerifyOTP() {
       setError(resendError.message)
     } else {
       setResendCooldown(60)
+      setOtp(Array(OTP_LENGTH).fill(''))
+      inputRefs.current[0]?.focus()
     }
     setResending(false)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-lg">
         <div className="bg-white rounded-2xl shadow-xl shadow-primary-100/50 border border-border-light p-8">
           <button
             onClick={() => navigate('/login')}
@@ -121,24 +125,24 @@ export default function VerifyOTP() {
             </div>
             <h2 className="text-2xl font-bold text-text-primary">Check your email</h2>
             <p className="text-text-secondary mt-2">
-              We sent a 6-digit code to<br />
+              We sent an {OTP_LENGTH}-digit code to<br />
               <span className="font-medium text-text-primary">{email}</span>
             </p>
           </div>
 
           <form onSubmit={handleVerify} className="space-y-6">
-            <div className="flex justify-center gap-2.5">
+            <div className="flex justify-center gap-2">
               {otp.map((digit, index) => (
                 <input
                   key={index}
                   ref={el => { inputRefs.current[index] = el }}
                   type="text"
                   inputMode="numeric"
-                  maxLength={6}
+                  maxLength={OTP_LENGTH}
                   value={digit}
                   onChange={e => handleChange(index, e.target.value)}
                   onKeyDown={e => handleKeyDown(index, e)}
-                  className="w-12 h-14 text-center text-xl font-bold border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-surface-secondary focus:bg-white"
+                  className="w-11 h-13 text-center text-lg font-bold border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-surface-secondary focus:bg-white"
                   disabled={loading}
                 />
               ))}
@@ -152,7 +156,7 @@ export default function VerifyOTP() {
 
             <button
               type="submit"
-              disabled={loading || otp.join('').length !== 6}
+              disabled={loading || otp.join('').length !== OTP_LENGTH}
               className="w-full bg-primary-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
