@@ -5,17 +5,13 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error(
-    'Missing Supabase environment variables. Please create a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY'
+    'Missing Supabase environment variables.'
   )
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Allowed email domains - add your university domain here
-export const ALLOWED_DOMAINS = ['nirmauni.ac.in']
-
-// For development/testing, you can add more domains:
-// export const ALLOWED_DOMAINS = ['nirmauni.ac.in', 'gmail.com']
+export const ALLOWED_DOMAINS = ['nirmauni.ac.in', 'gmail.com'] // gmail for testing
 
 export function isAllowedEmail(email: string): boolean {
   const domain = email.split('@')[1]?.toLowerCase()

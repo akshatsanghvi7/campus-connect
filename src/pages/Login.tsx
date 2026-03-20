@@ -10,6 +10,16 @@ export default function Login() {
   const [cooldown, setCooldown] = useState(0)
   const navigate = useNavigate()
 
+  // Clear any stale session when landing on login page
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        // Already logged in, go to home
+        navigate('/', { replace: true })
+      }
+    })
+  }, [navigate])
+
   // Cooldown timer
   useEffect(() => {
     if (cooldown > 0) {
@@ -18,7 +28,7 @@ export default function Login() {
     }
   }, [cooldown])
 
-  // Check if there's a saved cooldown in localStorage
+  // Restore cooldown from localStorage
   useEffect(() => {
     const savedExpiry = localStorage.getItem('otp_cooldown_expiry')
     if (savedExpiry) {
@@ -54,6 +64,9 @@ export default function Login() {
 
     setLoading(true)
 
+    // Sign out any existing session first
+    await supabase.auth.signOut()
+
     const { error: authError } = await supabase.auth.signInWithOtp({
       email: trimmedEmail,
       options: {
@@ -63,8 +76,7 @@ export default function Login() {
 
     if (authError) {
       if (authError.message.toLowerCase().includes('rate limit')) {
-        setError('Too many attempts. Please wait 60 minutes before trying again.')
-        // Set a long cooldown
+        setError('Too many attempts. Please wait before trying again.')
         const expiryTime = Date.now() + 60 * 60 * 1000
         localStorage.setItem('otp_cooldown_expiry', expiryTime.toString())
         setCooldown(3600)
@@ -75,7 +87,7 @@ export default function Login() {
       return
     }
 
-    // Set 60-second cooldown after successful send
+    // Set 60-second cooldown
     const expiryTime = Date.now() + 60 * 1000
     localStorage.setItem('otp_cooldown_expiry', expiryTime.toString())
     setCooldown(60)
@@ -129,7 +141,6 @@ export default function Login() {
       {/* Right side - Login form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
@@ -166,7 +177,7 @@ export default function Login() {
                     placeholder="yourname@nirmauni.ac.in"
                     className="w-full pl-11 pr-4 py-3 border border-border rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-surface-secondary focus:bg-white"
                     required
-                    disabled={loading}
+                    disabled={loading || cooldown > 0}
                   />
                 </div>
               </div>
