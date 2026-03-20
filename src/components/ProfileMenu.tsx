@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { LogOut, User, ChevronDown, Shield } from 'lucide-react'
+import { LogOut, ChevronDown, Shield } from 'lucide-react'
 
 export default function ProfileMenu() {
   const { profile, signOut } = useAuth()

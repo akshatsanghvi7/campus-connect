@@ -4,7 +4,7 @@ import {
   MapPin, Home, Users, IndianRupee, Calendar, Sofa, User,
   Ruler, Wifi, MoreVertical, Trash2, Flag, CheckCircle2, XCircle
 } from 'lucide-react'
-import { Post } from '../lib/types'
+import type { Post } from '../lib/types'
 import { useAuth } from '../hooks/useAuth'
 import ReportModal from './ReportModal'
 
@@ -52,7 +52,6 @@ export default function FlatmateCard({ post, onStatusChange, onDelete, index }: 
       }`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
-      {/* Status Badge */}
       {isClosed && (
         <div className="bg-accent-50 text-accent-600 text-xs font-semibold px-4 py-2 rounded-t-2xl flex items-center gap-1.5 border-b border-accent-100">
           <CheckCircle2 className="w-3.5 h-3.5" />
@@ -61,7 +60,6 @@ export default function FlatmateCard({ post, onStatusChange, onDelete, index }: 
       )}
 
       <div className="p-5">
-        {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white text-sm font-bold">
@@ -126,10 +124,8 @@ export default function FlatmateCard({ post, onStatusChange, onDelete, index }: 
           </div>
         </div>
 
-        {/* Title */}
         <h3 className="text-lg font-bold text-text-primary mb-4">{post.title}</h3>
 
-        {/* Key Details Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
           {data.location && (
             <DetailItem icon={<MapPin className="w-4 h-4" />} label="Location" value={data.location} />
@@ -160,7 +156,6 @@ export default function FlatmateCard({ post, onStatusChange, onDelete, index }: 
           )}
         </div>
 
-        {/* Amenities */}
         {data.amenities && data.amenities.length > 0 && (
           <div className="mb-4">
             <div className="flex items-center gap-1.5 mb-2">
@@ -181,14 +176,12 @@ export default function FlatmateCard({ post, onStatusChange, onDelete, index }: 
           </div>
         )}
 
-        {/* Additional Notes */}
         {data.additional_notes && (
           <p className="text-sm text-text-secondary bg-surface-secondary rounded-xl p-3 mb-4">
             {data.additional_notes}
           </p>
         )}
 
-        {/* Contact */}
         {data.contact_value && !isClosed && (
           <div className="bg-primary-50 rounded-xl p-3 flex items-center justify-between">
             <div>

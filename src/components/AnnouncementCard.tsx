@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns'
 import { Megaphone, Trash2 } from 'lucide-react'
-import { Post } from '../lib/types'
+import type { Post } from '../lib/types'
 import { useAuth } from '../hooks/useAuth'
 
 interface AnnouncementCardProps {

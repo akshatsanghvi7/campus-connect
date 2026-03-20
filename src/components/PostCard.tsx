@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { MessageCircle, MoreVertical, Trash2, Flag, ChevronDown, ChevronUp, Send } from 'lucide-react'
-import { Post, Comment } from '../lib/types'
+import type { Post, Comment } from '../lib/types'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import ReportModal from './ReportModal'
@@ -85,7 +85,6 @@ export default function PostCard({ post, onDelete, index }: PostCardProps) {
       className="bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all animate-fadeIn"
       style={{ animationDelay: `${index * 50}ms` }}
     >
-      {/* Post Header */}
       <div className="px-5 pt-5 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -136,7 +135,6 @@ export default function PostCard({ post, onDelete, index }: PostCardProps) {
           </div>
         </div>
 
-        {/* Post Content */}
         <div className="mt-3">
           <h3 className="text-base font-bold text-text-primary mb-1.5">{post.title}</h3>
           {post.body && (
@@ -145,7 +143,6 @@ export default function PostCard({ post, onDelete, index }: PostCardProps) {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="px-5 py-3 border-t border-border-light flex items-center">
         <button
           onClick={handleToggleComments}
@@ -157,7 +154,6 @@ export default function PostCard({ post, onDelete, index }: PostCardProps) {
         </button>
       </div>
 
-      {/* Comments Section */}
       {showComments && (
         <div className="border-t border-border-light">
           <div className="px-5 py-3 space-y-3 max-h-64 overflow-y-auto">
@@ -195,7 +191,6 @@ export default function PostCard({ post, onDelete, index }: PostCardProps) {
             )}
           </div>
 
-          {/* Comment Input */}
           <form onSubmit={handleSubmitComment} className="px-5 py-3 border-t border-border-light">
             <div className="flex items-center gap-2">
               <input
@@ -218,12 +213,8 @@ export default function PostCard({ post, onDelete, index }: PostCardProps) {
         </div>
       )}
 
-      {/* Report Modal */}
       {showReport && (
-        <ReportModal
-          postId={post.id}
-          onClose={() => setShowReport(false)}
-        />
+        <ReportModal postId={post.id} onClose={() => setShowReport(false)} />
       )}
     </div>
   )

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
-import { Channel } from '../lib/types'
+import type  { Channel } from '../lib/types'
 import { useAuth } from '../hooks/useAuth'
 import FlatmateForm from './FlatmateForm'
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
-import { Post } from '../lib/types'
+import type{ Post } from '../lib/types'
 
 interface UsePostsOptions {
   channelId?: string

@@ -1,5 +1,5 @@
 import { Hash, Megaphone, FileText } from 'lucide-react'
-import { Channel } from '../lib/types'
+import type { Channel } from '../lib/types'
 
 interface SidebarProps {
   channels: Channel[]

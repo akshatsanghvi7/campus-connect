@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Plus, Menu, Filter, Loader2, Inbox } from 'lucide-react'
-import { Channel } from '../lib/types'
+import type  { Channel } from '../lib/types'
 import { usePosts } from '../hooks/usePosts'
 import { useAuth } from '../hooks/useAuth'
 import PostCard from './PostCard'

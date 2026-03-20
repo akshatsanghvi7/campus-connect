@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar'
 import Feed from '../components/Feed'
 import FilterPanel from '../components/FilterPanel'
 import { useChannels } from '../hooks/useChannels'
-import { Channel } from '../lib/types'
+import type { Channel } from '../lib/types'
 
 export default function Home() {
   const { channels, loading: channelsLoading } = useChannels()

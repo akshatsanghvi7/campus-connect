@@ -24,15 +24,11 @@ const AMENITIES = [
   { id: 'balcony', label: 'Balcony', icon: '🌿' },
 ]
 
-// Vehicle types for ride sharing
 const VEHICLE_TYPES = ['Car', 'Bike', 'Auto', 'Bus', 'Other']
-
-// Item categories for marketplace
 const ITEM_CATEGORIES = ['Books', 'Electronics', 'Furniture', 'Clothing', 'Sports', 'Stationery', 'Other']
 const ITEM_CONDITIONS = ['New', 'Like New', 'Good', 'Fair', 'Poor']
 
 export default function FlatmateForm({ structuredType, onSubmit, loading, onCancel }: FlatmateFormProps) {
-  // Flatmate form state
   const [flatmateData, setFlatmateData] = useState({
     location: '',
     property_type: '',
@@ -49,7 +45,6 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
     additional_notes: '',
   })
 
-  // Ride share form state
   const [rideData, setRideData] = useState({
     from_location: '',
     to_location: '',
@@ -64,7 +59,6 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
     additional_notes: '',
   })
 
-  // Marketplace form state
   const [marketData, setMarketData] = useState({
     item_name: '',
     category: '',
@@ -100,16 +94,16 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
     return (
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormField label="From *" required>
+          <FormField label="From *">
             <input type="text" value={rideData.from_location} onChange={e => setRideData(p => ({ ...p, from_location: e.target.value }))} placeholder="e.g., Campus Gate" required className="form-input" />
           </FormField>
-          <FormField label="To *" required>
+          <FormField label="To *">
             <input type="text" value={rideData.to_location} onChange={e => setRideData(p => ({ ...p, to_location: e.target.value }))} placeholder="e.g., Railway Station" required className="form-input" />
           </FormField>
-          <FormField label="Date *" required>
+          <FormField label="Date *">
             <input type="date" value={rideData.date} onChange={e => setRideData(p => ({ ...p, date: e.target.value }))} required className="form-input" />
           </FormField>
-          <FormField label="Time *" required>
+          <FormField label="Time *">
             <input type="time" value={rideData.time} onChange={e => setRideData(p => ({ ...p, time: e.target.value }))} required className="form-input" />
           </FormField>
           <FormField label="Seats Available">
@@ -129,7 +123,7 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
             </select>
           </FormField>
         </div>
-        <FormField label="Contact *" required>
+        <FormField label="Contact *">
           <input type="text" value={rideData.contact_value} onChange={e => setRideData(p => ({ ...p, contact_value: e.target.value }))} placeholder="Phone / email / handle" required className="form-input" />
         </FormField>
         <FormField label="Notes">
@@ -144,16 +138,16 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
     return (
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormField label="Item Name *" required>
+          <FormField label="Item Name *">
             <input type="text" value={marketData.item_name} onChange={e => setMarketData(p => ({ ...p, item_name: e.target.value }))} placeholder="e.g., Engineering Drawing Kit" required className="form-input" />
           </FormField>
-          <FormField label="Category *" required>
+          <FormField label="Category *">
             <select value={marketData.category} onChange={e => setMarketData(p => ({ ...p, category: e.target.value }))} required className="form-input">
               <option value="">Select category</option>
               {ITEM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </FormField>
-          <FormField label="Price (₹) *" required>
+          <FormField label="Price (₹) *">
             <input type="number" value={marketData.price} onChange={e => setMarketData(p => ({ ...p, price: e.target.value }))} placeholder="Amount in ₹" required className="form-input" />
           </FormField>
           <FormField label="Condition">
@@ -166,7 +160,7 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
               {CONTACT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
           </FormField>
-          <FormField label="Contact *" required>
+          <FormField label="Contact *">
             <input type="text" value={marketData.contact_value} onChange={e => setMarketData(p => ({ ...p, contact_value: e.target.value }))} placeholder="Phone / email / handle" required className="form-input" />
           </FormField>
         </div>
@@ -182,11 +176,10 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
     )
   }
 
-  // Default: Flatmate form
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FormField label="Location / Area *" required>
+        <FormField label="Location / Area *">
           <input
             type="text"
             value={flatmateData.location}
@@ -197,7 +190,7 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
           />
         </FormField>
 
-        <FormField label="Property Type *" required>
+        <FormField label="Property Type *">
           <select
             value={flatmateData.property_type}
             onChange={e => setFlatmateData(p => ({ ...p, property_type: e.target.value }))}
@@ -211,7 +204,7 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
           </select>
         </FormField>
 
-        <FormField label="Flatmates Needed *" required>
+        <FormField label="Flatmates Needed *">
           <input
             type="number"
             min={1}
@@ -223,7 +216,7 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
           />
         </FormField>
 
-        <FormField label="Rent per Person (₹) *" required>
+        <FormField label="Rent per Person (₹) *">
           <input
             type="number"
             value={flatmateData.rent_per_person}
@@ -301,7 +294,7 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
         </FormField>
       </div>
 
-      <FormField label="Contact Details *" required>
+      <FormField label="Contact Details *">
         <input
           type="text"
           value={flatmateData.contact_value}
@@ -312,7 +305,6 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
         />
       </FormField>
 
-      {/* Amenities */}
       <div>
         <label className="block text-sm font-medium text-text-primary mb-2">Amenities</label>
         <div className="flex flex-wrap gap-2">
@@ -349,7 +341,7 @@ export default function FlatmateForm({ structuredType, onSubmit, loading, onCanc
   )
 }
 
-function FormField({ label, children, required }: { label: string; children: React.ReactNode; required?: boolean }) {
+function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
       <label className="block text-sm font-medium text-text-primary mb-1.5">

@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { User, Session } from '@supabase/supabase-js'
+import { createContext, useContext, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import type { User, Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
-import { Profile } from '../lib/types'
+import type { Profile } from '../lib/types'
 
 interface AuthContextType {
   user: User | null
@@ -49,7 +50,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
@@ -63,14 +63,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     })
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session)
         setUser(session?.user ?? null)
 
         if (session?.user) {
-          // Small delay to let the trigger create the profile
           if (event === 'SIGNED_IN') {
             await new Promise(resolve => setTimeout(resolve, 500))
           }
