@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase, isAllowedEmail, ALLOWED_DOMAINS } from '../lib/supabase'
 import { Mail, ArrowRight, Shield, MessageSquare, Users, Megaphone } from 'lucide-react'
@@ -7,7 +7,29 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [cooldown, setCooldown] = useState(0)
   const navigate = useNavigate()
+
+  // Cooldown timer
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [cooldown])
+
+  // Check if there's a saved cooldown in localStorage
+  useEffect(() => {
+    const savedExpiry = localStorage.getItem('otp_cooldown_expiry')
+    if (savedExpiry) {
+      const remaining = Math.ceil((parseInt(savedExpiry) - Date.now()) / 1000)
+      if (remaining > 0) {
+        setCooldown(remaining)
+      } else {
+        localStorage.removeItem('otp_cooldown_expiry')
+      }
+    }
+  }, [])
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -25,6 +47,11 @@ export default function Login() {
       return
     }
 
+    if (cooldown > 0) {
+      setError(`Please wait ${cooldown} seconds before requesting another code`)
+      return
+    }
+
     setLoading(true)
 
     const { error: authError } = await supabase.auth.signInWithOtp({
@@ -35,10 +62,23 @@ export default function Login() {
     })
 
     if (authError) {
-      setError(authError.message)
+      if (authError.message.toLowerCase().includes('rate limit')) {
+        setError('Too many attempts. Please wait 60 minutes before trying again.')
+        // Set a long cooldown
+        const expiryTime = Date.now() + 60 * 60 * 1000
+        localStorage.setItem('otp_cooldown_expiry', expiryTime.toString())
+        setCooldown(3600)
+      } else {
+        setError(authError.message)
+      }
       setLoading(false)
       return
     }
+
+    // Set 60-second cooldown after successful send
+    const expiryTime = Date.now() + 60 * 1000
+    localStorage.setItem('otp_cooldown_expiry', expiryTime.toString())
+    setCooldown(60)
 
     navigate('/verify', { state: { email: trimmedEmail } })
   }
@@ -139,11 +179,13 @@ export default function Login() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || cooldown > 0}
                 className="w-full bg-primary-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 group"
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : cooldown > 0 ? (
+                  `Wait ${cooldown}s before resending`
                 ) : (
                   <>
                     Send Verification Code
